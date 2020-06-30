@@ -6,24 +6,31 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"net/url"
+	"strings"
 )
 
 type json_data struct {
 	IP string `json:"IP"`
 }
 
+//var sc = bufio.NewScanner( os.Stdin )
+
 func main() {
 
-	var url = connect_url()
-	url += "/test"
+	//var url_h = connect_url()
+	var url_h = "http://localhost:8080"
+	url_h += "/test"
 
-	req, err := http.NewRequest( "Get", url, nil)
-
+	val:= url.Values{}
+	val.Set("key", "value")
+	req, err := http.NewRequest("POST",url_h, strings.NewReader(val.Encode()))
 	if err != nil {
 		fmt.Println( "Error:http" )
 		fmt.Println( err )
 		os.Exit( 0 )
 	}
+	req.Header.Set("Authorization", "XXXXXXXX")
 
 	client := new(http.Client)
   resp, err := client.Do(req)
@@ -32,8 +39,16 @@ func main() {
 		fmt.Println( err )
 		os.Exit( 0 )
 	}
-  byteArray, _ := ioutil.ReadAll(resp.Body)
-  fmt.Println(string(byteArray))
+
+	defer resp.Body.Close()
+	body, error := ioutil.ReadAll(resp.Body)
+	if error != nil {
+		fmt.Println( "Error:resp" )
+		fmt.Println( err )
+		os.Exit( 0 )
+	}
+	fmt.Println("[body] " + string(body))
+
 }
 
 func connect_url() string {
@@ -52,3 +67,8 @@ func connect_url() string {
 
 	return url
 }
+/*
+func input() string {
+    sc.Scan()
+    return sc.Text()
+}*/
