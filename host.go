@@ -35,7 +35,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			os.Exit( 0 )
 		}
 		fmt.Println("[request body decoded] ", decoded)
-		fmt.Fprint(w, "Recieved Post(form) request!!")
+		fmt.Fprint(w, decoded,":Recieved Post(form) request!!")
 	}
 }
 
